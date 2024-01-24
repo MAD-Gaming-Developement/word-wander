@@ -5,7 +5,10 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import android.view.View;
 import android.widget.TextView;
+
 
 public class MenuActivity extends AppCompatActivity {
     TextView play, howTo, exit, policy;
@@ -18,7 +21,6 @@ public class MenuActivity extends AppCompatActivity {
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.blue));
 
         setButtonsAndListeners();
-
     }
     private void setButtonsAndListeners(){
         play = findViewById(R.id.tvPlayBtn);
@@ -37,10 +39,13 @@ public class MenuActivity extends AppCompatActivity {
         exit.setOnClickListener(view -> {
             finishAffinity();
         });
+        policy.setVisibility(View.VISIBLE);
         policy.setOnClickListener(view -> {
-//            Intent i = new Intent(this, );
-            //put extra url
-//            startActivity(i);
+            Intent intent = new Intent(this, WebActivity.class);
+            String gameURL = "file:///android_asset/userconsent.html";
+            intent.putExtra("url", gameURL);
+            startActivity(intent);
+            finish();
         });
     }
 }

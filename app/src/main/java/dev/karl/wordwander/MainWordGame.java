@@ -111,7 +111,7 @@ public class MainWordGame extends AppCompatActivity {
 
     void setupEmptyGridView(){
         playSoundEffect(newTry);
-        for (int q1 = 0 ; q1 < "QWERTYUIOPASDFGHJKLZXCVBNM".length() ; q1++){
+        for (int q1 = 0 ; q1 < 26 ; q1++){
             setLetterKeyColor("QWERTYUIOPASDFGHJKLZXCVBNM".charAt(q1), R.drawable.ripple_blue);
         }
         masterWord = WordsDatasetHelper.getNewRandomWord().toUpperCase();
@@ -126,41 +126,9 @@ public class MainWordGame extends AppCompatActivity {
 
         letterList.clear();
 
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
-        letterList.add(new LetterTileModel("", BLACK, WHITE));
+        for (int q1 = 0 ; q1 < 30 ; q1++){
+            letterList.add(new LetterTileModel("", BLACK, WHITE));
+        }
 
         gridAdapter = new GridAdapter(this, letterList);
         binding.gameGridView.setAdapter(gridAdapter);
@@ -200,241 +168,42 @@ public class MainWordGame extends AppCompatActivity {
         tvN = findViewById(R.id.tvLetterN);
         tvM = findViewById(R.id.tvLetterM);
     }
+    void letterKeyClick(String letter){
+        if(currentTurnCursor < 5 && !isGameOver){
+            gridAdapter.setLetter(gridViewCursor, letter);
+            gridViewCursor++;
+            currentTurnCursor++;
+            userWordGuess = userWordGuess + letter;
+            tvHintText.setText("");
+        }
+    }
     void setTextviewClickListeners(){
-        tvQ.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "Q");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "Q";
-                tvHintText.setText("");
-            }
-        });
-        tvW.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "W");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "W";
-                tvHintText.setText("");
-            }
-        });
-        tvE.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "E");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "E";
-                tvHintText.setText("");
-            }
-        });
-        tvR.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "R");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "R";
-                tvHintText.setText("");
-            }
-        });
-        tvT.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "T");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "T";
-                tvHintText.setText("");
-            }
-        });
-        tvY.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "Y");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "Y";
-                tvHintText.setText("");
-            }
-        });
-        tvU.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "U");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "U";
-                tvHintText.setText("");
-            }
-        });
-        tvI.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "I");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "I";
-                tvHintText.setText("");
-            }
-        });
-        tvO.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "O");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "O";
-                tvHintText.setText("");
-            }
-        });
-        tvP.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "P");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "P";
-                tvHintText.setText("");
-            }
-        });
-        tvA.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "A");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "A";
-                tvHintText.setText("");
-            }
-        });
-        tvS.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "S");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "S";
-                tvHintText.setText("");
-            }
-        });
-        tvD.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "D");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "D";
-                tvHintText.setText("");
-            }
-        });
-        tvF.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "F");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "F";
-                tvHintText.setText("");
-            }
-        });
-        tvG.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "G");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "G";
-                tvHintText.setText("");
-            }
-        });
-        tvH.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "H");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "H";
-                tvHintText.setText("");
-            }
-        });
-        tvJ.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "J");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "J";
-                tvHintText.setText("");
-            }
-        });
-        tvK.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "K");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "K";
-                tvHintText.setText("");
-            }
-        });
-        tvL.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "L");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "L";
-                tvHintText.setText("");
-            }
-        });
-        tvZ.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "Z");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "Z";
-                tvHintText.setText("");
-            }
-        });
-        tvX.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "X");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "X";
-                tvHintText.setText("");
-            }
-        });
-        tvC.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "C");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "C";
-                tvHintText.setText("");
-            }
-        });
-        tvV.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "V");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "V";
-                tvHintText.setText("");
-            }
-        });
-        tvB.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "B");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "B";
-                tvHintText.setText("");
-            }
-        });
-        tvN.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "N");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "N";
-                tvHintText.setText("");
-            }
-        });
-        tvM.setOnClickListener(view -> {
-            if(currentTurnCursor < 5 && !isGameOver){
-                gridAdapter.setLetter(gridViewCursor, "M");
-                gridViewCursor++;
-                currentTurnCursor++;
-                userWordGuess = userWordGuess + "M";
-                tvHintText.setText("");
-            }
-        });
+        tvQ.setOnClickListener(view -> letterKeyClick("Q"));
+        tvW.setOnClickListener(view -> letterKeyClick("W"));
+        tvE.setOnClickListener(view -> letterKeyClick("E"));
+        tvR.setOnClickListener(view -> letterKeyClick("R"));
+        tvT.setOnClickListener(view -> letterKeyClick("T"));
+        tvY.setOnClickListener(view -> letterKeyClick("Y"));
+        tvU.setOnClickListener(view -> letterKeyClick("U"));
+        tvI.setOnClickListener(view -> letterKeyClick("I"));
+        tvO.setOnClickListener(view -> letterKeyClick("O"));
+        tvP.setOnClickListener(view -> letterKeyClick("P"));
+        tvA.setOnClickListener(view -> letterKeyClick("A"));
+        tvS.setOnClickListener(view -> letterKeyClick("S"));
+        tvD.setOnClickListener(view -> letterKeyClick("D"));
+        tvF.setOnClickListener(view -> letterKeyClick("F"));
+        tvG.setOnClickListener(view -> letterKeyClick("G"));
+        tvH.setOnClickListener(view -> letterKeyClick("H"));
+        tvJ.setOnClickListener(view -> letterKeyClick("J"));
+        tvK.setOnClickListener(view -> letterKeyClick("K"));
+        tvL.setOnClickListener(view -> letterKeyClick("L"));
+        tvZ.setOnClickListener(view -> letterKeyClick("Z"));
+        tvX.setOnClickListener(view -> letterKeyClick("X"));
+        tvC.setOnClickListener(view -> letterKeyClick("C"));
+        tvV.setOnClickListener(view -> letterKeyClick("V"));
+        tvB.setOnClickListener(view -> letterKeyClick("B"));
+        tvN.setOnClickListener(view -> letterKeyClick("N"));
+        tvM.setOnClickListener(view -> letterKeyClick("M"));
     }
     void checkMatch(String guess, String master){
         StringBuilder guessStrBldr = new StringBuilder(guess);
@@ -481,102 +250,77 @@ public class MainWordGame extends AppCompatActivity {
                 tvW.setBackgroundResource(ripple);
                 break;
             case 'E':
-                //
                 tvE.setBackgroundResource(ripple);
                 break;
             case 'R':
-                //
                 tvR.setBackgroundResource(ripple);
                 break;
             case 'T':
-                //
                 tvT.setBackgroundResource(ripple);
                 break;
             case 'Y':
-                //
                 tvY.setBackgroundResource(ripple);
                 break;
             case 'U':
-                //
                 tvU.setBackgroundResource(ripple);
                 break;
             case 'I':
-                //
                 tvI.setBackgroundResource(ripple);
                 break;
             case 'O':
-                //
                 tvO.setBackgroundResource(ripple);
                 break;
             case 'P':
-                //
                 tvP.setBackgroundResource(ripple);
                 break;
             case 'A':
-                //
                 tvA.setBackgroundResource(ripple);
                 break;
             case 'S':
-                //
                 tvS.setBackgroundResource(ripple);
                 break;
             case 'D':
-                //
                 tvD.setBackgroundResource(ripple);
                 break;
             case 'F':
-                //
                 tvF.setBackgroundResource(ripple);
                 break;
             case 'G':
-                //
                 tvG.setBackgroundResource(ripple);
                 break;
             case 'H':
-                //
                 tvH.setBackgroundResource(ripple);
                 break;
             case 'J':
-                //
                 tvJ.setBackgroundResource(ripple);
                 break;
             case 'K':
-                //
                 tvK.setBackgroundResource(ripple);
                 break;
             case 'L':
-                //
                 tvL.setBackgroundResource(ripple);
                 break;
             case 'Z':
-                //
                 tvZ.setBackgroundResource(ripple);
                 break;
             case 'X':
-                //
                 tvX.setBackgroundResource(ripple);
                 break;
             case 'C':
-                //
                 tvC.setBackgroundResource(ripple);
                 break;
             case 'V':
-                //
                 tvV.setBackgroundResource(ripple);
                 break;
             case 'B':
-                //
                 tvB.setBackgroundResource(ripple);
                 break;
             case 'N':
-                //
                 tvN.setBackgroundResource(ripple);
                 break;
             case 'M':
-                //
                 tvM.setBackgroundResource(ripple);
                 break;
-
         }
     }
     void endGameDialog(boolean hasWon){
@@ -653,7 +397,6 @@ public class MainWordGame extends AppCompatActivity {
             alertDialog.dismiss();
         });
     }
-
     void playSoundEffect(MediaPlayer mp){
         mediaPlayer = mp;
         if (isSoundEnabled){
@@ -667,7 +410,6 @@ public class MainWordGame extends AppCompatActivity {
         bg.pause();
         mediaPlayer.pause();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
