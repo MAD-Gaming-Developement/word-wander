@@ -55,16 +55,14 @@ public class MainWordGame extends AppCompatActivity {
 
         pref = this.getSharedPreferences("WordSharedPrefs", Context.MODE_PRIVATE);
 
-        WordsDatasetHelper.initializeWordsList(this);
-
         tvHintText = findViewById(R.id.tvHintText);
+
+        isMusicEnabled = pref.getBoolean("music", true);
+        isSoundEnabled = pref.getBoolean("sound", true);
 
         initializeTextviews();
         setupEmptyGridView();
         setTextviewClickListeners();
-
-        isMusicEnabled = pref.getBoolean("music", true);
-        isSoundEnabled = pref.getBoolean("sound", true);
 
         if (isMusicEnabled){
             bg.seekTo(0);

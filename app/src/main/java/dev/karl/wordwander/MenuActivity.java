@@ -21,6 +21,7 @@ public class MenuActivity extends AppCompatActivity {
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.blue));
 
         setButtonsAndListeners();
+        WordsDatasetHelper.initializeWordsList(this);
     }
     private void setButtonsAndListeners(){
         play = findViewById(R.id.tvPlayBtn);
