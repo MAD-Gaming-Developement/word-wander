@@ -1,6 +1,5 @@
 package dev.karl.wordwander;
 
-
 import android.content.Context;
 
 import java.io.BufferedReader;
@@ -36,5 +35,5 @@ public class WordsDatasetHelper {
     public static boolean checkIfWordExists(String word){
         return words.containsKey(word.toLowerCase());
     }
-    //AF
+    //Adjust
 }

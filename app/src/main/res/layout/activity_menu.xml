@@ -103,7 +103,7 @@
         android:layout_marginHorizontal="24sp"
         />
     <TextView
-        android:visibility="invisible"
+        android:visibility="visible"
         android:id="@+id/tvPolicyBtn"
         android:layout_width="match_parent"
         android:layout_height="50sp"
