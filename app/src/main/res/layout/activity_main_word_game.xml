@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_blue"
+    tools:context=".MainWordGame">
+
+    <include
+        android:contentDescription="keyboard"
+        android:id="@+id/homeKeyboard"
+        layout="@layout/keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <GridView
+
+        android:contentDescription="letters grid"
+        android:gravity="center"
+        android:listSelector="#00000000"
+        android:background="@color/transparent"
+        android:id="@+id/gameGridView"
+        android:layout_width="300sp"
+        android:layout_height="355sp"
+        tools:listitem="@layout/letter_grid_item"
+        android:numColumns="5"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/homeKeyboard"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+
+        android:contentDescription="hints"
+        android:id="@+id/tvHintText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/white"
+        android:fontFamily="@font/roboto_mono"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gameGridView"
+        app:layout_constraintBottom_toTopOf="@id/homeKeyboard"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

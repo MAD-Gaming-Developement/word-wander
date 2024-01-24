@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:contentDescription="settings dialog"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_rounded_blue">
+
+    <View
+        android:importantForAccessibility="no"
+        android:id="@+id/divider03"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <TextView
+        android:labelFor="@id/musicCb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/musicTv"
+        android:text="MUSIC"
+        android:fontFamily="@font/roboto_mono"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintRight_toRightOf="@id/divider03"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="24sp"/>
+    <TextView
+        android:labelFor="@id/soundCb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/soundsTv"
+        android:text="SOUNDS"
+        android:fontFamily="@font/roboto_mono"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintRight_toRightOf="@id/divider03"
+        app:layout_constraintTop_toBottomOf="@id/musicTv"
+        android:layout_marginTop="12sp"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/musicCb"
+        android:theme="@style/cbTheme"
+        app:layout_constraintTop_toTopOf="@id/musicTv"
+        app:layout_constraintBottom_toBottomOf="@id/musicTv"
+        app:layout_constraintLeft_toLeftOf="@id/divider03"/>
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/soundCb"
+        android:theme="@style/cbTheme"
+        app:layout_constraintTop_toTopOf="@id/soundsTv"
+        app:layout_constraintBottom_toBottomOf="@id/soundsTv"
+        app:layout_constraintLeft_toLeftOf="@id/divider03"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/tvNewWord"
+        android:background="@drawable/ripple_orange"
+        android:text="New Word"
+        android:clickable="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/soundsTv"
+        android:layout_marginTop="24sp"
+        android:paddingHorizontal="24sp"
+        android:paddingVertical="10sp"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/roboto_mono"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="24sp"/>
+
+    <ImageView
+
+        android:contentDescription="close dialog button"
+        android:layout_width="30sp"
+        android:layout_height="30sp"
+        android:id="@+id/closeDia"
+        android:background="@drawable/baseline_clear_24"
+        android:clickable="true"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="14sp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

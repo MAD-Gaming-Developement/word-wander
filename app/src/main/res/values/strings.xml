@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Word Wander</string>
+    <string name="instructions_txt_1">Guess the hidden word in 6 tries.\n\nEach guess must be a valid 5 letter word, you cannot enter random letters. Hit the enter button to submit the guess.\n\nAfter your submission, the color of the tiles will change as in the example below.</string>
+    <string name="instructions_txt_2">The letter R is in the word and in the correct spot.\n\nThe letters A and D are in the word but in the wrong spot.\n\nThe letters E and S are not in the word in any spot.</string>
+</resources>
