@@ -36,8 +36,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.dark_blue));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.dark_blue));
 
         splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
             @Override
