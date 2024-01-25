@@ -19,10 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import dev.karl.wordwander.databinding.ActivityMainWordGameBinding;
 
 public class MainWordGame extends AppCompatActivity {
+    HashMap<Character, Boolean> keyColorIsOrange = new HashMap<>();
     SharedPreferences pref;
     MediaPlayer bg, newTry, reveal, win, lose, mediaPlayer;
     String userWordGuess, masterWord;
@@ -110,7 +112,9 @@ public class MainWordGame extends AppCompatActivity {
     void setupEmptyGridView(){
         playSoundEffect(newTry);
         for (int q1 = 0 ; q1 < 26 ; q1++){
-            setLetterKeyColor("QWERTYUIOPASDFGHJKLZXCVBNM".charAt(q1), R.drawable.ripple_blue);
+            TextView tempTV = getTVObjectFromCharacter("QWERTYUIOPASDFGHJKLZXCVBNM".charAt(q1));
+            tempTV.setBackgroundResource(R.drawable.ripple_blue);
+            keyColorIsOrange.put("QWERTYUIOPASDFGHJKLZXCVBNM".charAt(q1), Boolean.FALSE);
         }
         masterWord = WordsDatasetHelper.getNewRandomWord().toUpperCase();
         Log.d("masterword:", masterWord);
@@ -239,86 +243,72 @@ public class MainWordGame extends AppCompatActivity {
             }
         }
     }
-    void setLetterKeyColor(Character tv, @DrawableRes Integer ripple){
-        switch (tv){
+    TextView getTVObjectFromCharacter(Character c){
+        switch (c){
             case 'Q':
-                tvQ.setBackgroundResource(ripple);
-                break;
+                return tvQ;
             case 'W':
-                tvW.setBackgroundResource(ripple);
-                break;
+                return tvW;
             case 'E':
-                tvE.setBackgroundResource(ripple);
-                break;
+                return tvE;
             case 'R':
-                tvR.setBackgroundResource(ripple);
-                break;
+                return tvR;
             case 'T':
-                tvT.setBackgroundResource(ripple);
-                break;
+                return tvT;
             case 'Y':
-                tvY.setBackgroundResource(ripple);
-                break;
+                return tvY;
             case 'U':
-                tvU.setBackgroundResource(ripple);
-                break;
+                return tvU;
             case 'I':
-                tvI.setBackgroundResource(ripple);
-                break;
+                return tvI;
             case 'O':
-                tvO.setBackgroundResource(ripple);
-                break;
+                return tvO;
             case 'P':
-                tvP.setBackgroundResource(ripple);
-                break;
+                return tvP;
             case 'A':
-                tvA.setBackgroundResource(ripple);
-                break;
+                return tvA;
             case 'S':
-                tvS.setBackgroundResource(ripple);
-                break;
+                return tvS;
             case 'D':
-                tvD.setBackgroundResource(ripple);
-                break;
+                return tvD;
             case 'F':
-                tvF.setBackgroundResource(ripple);
-                break;
+                return tvF;
             case 'G':
-                tvG.setBackgroundResource(ripple);
-                break;
+                return tvG;
             case 'H':
-                tvH.setBackgroundResource(ripple);
-                break;
+                return tvH;
             case 'J':
-                tvJ.setBackgroundResource(ripple);
-                break;
+                return tvJ;
             case 'K':
-                tvK.setBackgroundResource(ripple);
-                break;
+                return tvK;
             case 'L':
-                tvL.setBackgroundResource(ripple);
-                break;
+                return tvL;
             case 'Z':
-                tvZ.setBackgroundResource(ripple);
-                break;
+                return tvZ;
             case 'X':
-                tvX.setBackgroundResource(ripple);
-                break;
+                return tvX;
             case 'C':
-                tvC.setBackgroundResource(ripple);
-                break;
+                return tvC;
             case 'V':
-                tvV.setBackgroundResource(ripple);
-                break;
+                return tvV;
             case 'B':
-                tvB.setBackgroundResource(ripple);
-                break;
+                return tvB;
             case 'N':
-                tvN.setBackgroundResource(ripple);
-                break;
+                return tvN;
             case 'M':
-                tvM.setBackgroundResource(ripple);
-                break;
+                return tvM;
+            default:
+                return tvEnter;
+        }
+    }
+    void setLetterKeyColor(Character tv, @DrawableRes Integer ripple){
+        TextView tempTV = getTVObjectFromCharacter(tv);
+
+        if (Boolean.FALSE.equals(keyColorIsOrange.get(tv))){
+            tempTV.setBackgroundResource(ripple);
+            if (ripple == R.drawable.ripple_orange){
+                keyColorIsOrange.put(tv, Boolean.TRUE);
+            }
         }
     }
     void endGameDialog(boolean hasWon){
