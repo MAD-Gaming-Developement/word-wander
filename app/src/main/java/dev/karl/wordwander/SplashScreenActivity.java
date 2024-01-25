@@ -24,7 +24,7 @@ import java.util.Objects;
 
 public class SplashScreenActivity extends AppCompatActivity {
     private static final int SPLASH_TIME_OUT = 2000;
-    private static final String APP_ID = "5G";
+    private static final String APP_ID = "97CC";
     public static String gameURL = "";
     public static String appStatus = "";
     public static String apiResponse = "";
@@ -54,7 +54,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String endPoint = "https://backend.madgamingdev.com/api/gameid" + "?appid="+ APP_ID +"&package=" + this.getPackageName();
-        Log.d("endP", endPoint);
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, endPoint, requestBody,
                 response -> {
                     apiResponse = response.toString();
@@ -64,7 +63,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                         JSONObject gameData = new JSONObject(decryptedData);
                         appStatus = jsonData.getString("gameKey");
                         gameURL = gameData.getString("gameURL");
-                        Log.d("sideB","status:"+appStatus + " gameURL:"+gameURL);
                         new Handler(Objects.requireNonNull(Looper.myLooper())).postDelayed(() -> {
                             splashScreen.setKeepOnScreenCondition(new SplashScreen.KeepOnScreenCondition() {
                                 @Override
@@ -77,8 +75,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 intent.putExtra("url", gameURL);
                                 startActivity(intent);
                                 finish();
-                            }
-                            else{
+                            }else{
                                 SharedPreferences pref = this.getSharedPreferences("WordSharedPrefs", Context.MODE_PRIVATE);
                                 if (!pref.getBoolean("userAgrees", false)){
                                     Intent intent = new Intent(this, WebActivity.class);
@@ -97,7 +94,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-
                 }, error -> Log.d("API:RESPONSE", error.toString())
         );
         connectAPI.add(jsonRequest);

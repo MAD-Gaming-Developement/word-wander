@@ -117,7 +117,6 @@ public class MainWordGame extends AppCompatActivity {
             keyColorIsOrange.put("QWERTYUIOPASDFGHJKLZXCVBNM".charAt(q1), Boolean.FALSE);
         }
         masterWord = WordsDatasetHelper.getNewRandomWord().toUpperCase();
-        Log.d("masterword:", masterWord);
         gridViewCursor = 0;
         currentTurnCursor = 0;
         userWordGuess = "";

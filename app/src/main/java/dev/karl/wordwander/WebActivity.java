@@ -45,13 +45,11 @@ public class WebActivity extends Activity {
         getWindow().setNavigationBarColor(ContextCompat.getColor(WebActivity.this, R.color.black));
 
         String url = getIntent().getStringExtra("url");
-        Log.e("TAG", "url  =" + url);
 
         if (TextUtils.isEmpty(url)) {
             finish();
         }
         loadUrl = url;
-        Log.e(TAG, "loadUrl  =" + loadUrl);
         RelativeLayout relativeLayout = new RelativeLayout(this);
         relativeLayout.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
@@ -66,7 +64,6 @@ public class WebActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
-                Log.e("TAG", " url  = " + url);
                 try {
                     webView.loadUrl(uri.toString());
                     return true;
@@ -123,7 +120,6 @@ public class WebActivity extends Activity {
         setting.setDatabaseEnabled(true);
         setting.setGeolocationEnabled(true);
         setting.setUseWideViewPort(true);
-        //setting.setAppCacheEnabled(true);
         setting.setUserAgentString(setting.getUserAgentString().replaceAll("; wv", ""));
         int SDK_INT = Build.VERSION.SDK_INT;
         if (SDK_INT > 16) {
@@ -149,22 +145,30 @@ public class WebActivity extends Activity {
             startActivity(intent);
         });
         webView.setWebChromeClient(new WebChromeClient() {
-            // For Android 3.0+
+            /*
+             * For Android 3.0+
+             */
             public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
                 WebActivity.this.mUploadCallBack = uploadMsg;
                 openFileChooseProcess();
             }
-            // For Android < 3.0
+            /*
+             * For Android < 3.0
+             */
             public void openFileChooser(ValueCallback<Uri> uploadMsgs) {
                 WebActivity.this.mUploadCallBack = uploadMsgs;
                 openFileChooseProcess();
             }
-            // For Android  > 4.1.1
+            /*
+             * For Android  > 4.1.1
+             */
             public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
                 WebActivity.this.mUploadCallBack = uploadMsg;
                 openFileChooseProcess();
             }
-            // For Android  >= 5.0
+            /*
+             * For Android  >= 5.0
+             */
             public boolean onShowFileChooser(WebView webView,
                                              ValueCallback<Uri[]> filePathCallback,
                                              FileChooserParams fileChooserParams) {
@@ -189,7 +193,6 @@ public class WebActivity extends Activity {
     public class JsInterface {
         @JavascriptInterface
         public void postMessage(String name, String data) {
-            Log.e(TAG, "name = " + name + "    data = " + data);
             if (TextUtils.isEmpty(name) || TextUtils.isEmpty(data)) {
                 return;
             }
@@ -205,7 +208,6 @@ public class WebActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e(TAG, "---------requestCode = "+requestCode+ "      resultCode = "+resultCode);
         if (requestCode == this.REQUEST_CODE_FILE_CHOOSER) {
             Uri result = data == null || resultCode != RESULT_OK ? null : data.getData();
             if (result != null) {
@@ -227,7 +229,6 @@ public class WebActivity extends Activity {
                 if (webView == null) {
                     return;
                 }
-                Log.e(TAG, "---------#####-----");
                 webView.evaluateJavascript("javascript:window.closeGame()", new ValueCallback<String>() {
                     @Override
                     public void onReceiveValue(String value) {

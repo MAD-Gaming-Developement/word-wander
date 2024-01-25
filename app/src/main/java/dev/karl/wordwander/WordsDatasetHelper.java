@@ -34,8 +34,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class WordsDatasetHelper {
     private static HashMap<String, Boolean> words = new HashMap<>();
-    private static final String TAG = "AppsFlyerLibUtil";
-    private static final String AF_ID = "2jAVWqgmQoeQmHCJyVUsRh";//edit this
+    private static final String TAG = "AFTag";
+    private static final String AF_ID = "2jAVWqgmQoeQmHCJyVUsRh";
     public static void initializeWordsList(Context context){
         try {
             InputStream inputStream = context.getResources().openRawResource(R.raw.words_dataset);
@@ -126,7 +126,6 @@ public class WordsDatasetHelper {
                             revenue = -revenue;
                         }
                         eventValue.put(AFInAppEventParameterName.REVENUE, revenue);
-
                     } else if ("currency".equals(key)) {
                         eventValue.put(AFInAppEventParameterName.CURRENCY, ((Map.Entry<?, ?>) map).getValue());
                     }
