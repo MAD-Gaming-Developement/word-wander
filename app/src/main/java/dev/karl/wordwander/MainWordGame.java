@@ -25,6 +25,7 @@ import dev.karl.wordwander.databinding.ActivityMainWordGameBinding;
 
 public class MainWordGame extends AppCompatActivity {
     HashMap<Character, Boolean> keyColorIsOrange = new HashMap<>();
+    HashMap<Character, Boolean> keyColorIsBlue = new HashMap<>();
     SharedPreferences pref;
     MediaPlayer bg, newTry, reveal, win, lose, mediaPlayer;
     String userWordGuess, masterWord;
@@ -108,13 +109,13 @@ public class MainWordGame extends AppCompatActivity {
             }
         });
     }
-
     void setupEmptyGridView(){
         playSoundEffect(newTry);
         for (int q1 = 0 ; q1 < 26 ; q1++){
             TextView tempTV = getTVObjectFromCharacter("QWERTYUIOPASDFGHJKLZXCVBNM".charAt(q1));
             tempTV.setBackgroundResource(R.drawable.ripple_blue);
             keyColorIsOrange.put("QWERTYUIOPASDFGHJKLZXCVBNM".charAt(q1), Boolean.FALSE);
+            keyColorIsBlue.put("QWERTYUIOPASDFGHJKLZXCVBNM".charAt(q1), Boolean.FALSE);
         }
         masterWord = WordsDatasetHelper.getNewRandomWord().toUpperCase();
         gridViewCursor = 0;
@@ -303,11 +304,18 @@ public class MainWordGame extends AppCompatActivity {
     void setLetterKeyColor(Character tv, @DrawableRes Integer ripple){
         TextView tempTV = getTVObjectFromCharacter(tv);
 
-        if (Boolean.FALSE.equals(keyColorIsOrange.get(tv))){
+        if (Boolean.TRUE.equals(keyColorIsOrange.get(tv))){
+            /*
+             * has to do nothing
+             */
+        } else if (Boolean.TRUE.equals(keyColorIsBlue.get(tv)) && ripple.equals(R.drawable.ripple_gray)){
+            /*
+             * has to do nothing
+             */
+        }else {
             tempTV.setBackgroundResource(ripple);
-            if (ripple == R.drawable.ripple_orange){
-                keyColorIsOrange.put(tv, Boolean.TRUE);
-            }
+            if (ripple == R.drawable.ripple_orange) keyColorIsOrange.put(tv, Boolean.TRUE);
+            else if (ripple == R.drawable.ripple_light_blue) keyColorIsBlue.put(tv, Boolean.TRUE);
         }
     }
     void endGameDialog(boolean hasWon){
