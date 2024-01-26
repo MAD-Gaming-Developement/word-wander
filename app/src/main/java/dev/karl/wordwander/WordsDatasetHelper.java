@@ -84,6 +84,8 @@ public class WordsDatasetHelper {
     public static void event(Activity context, String name, String data) {
         Map<String, Object> eventValue = new HashMap<String, Object>();
         if ("UserConsent".equals(name)) {
+            eventValue.put(name, data);
+            AppsFlyerLib.getInstance().logEvent(context, name, eventValue);
             SharedPreferences pref = context.getSharedPreferences("WordSharedPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
             if (data.equals("Accepted")){
