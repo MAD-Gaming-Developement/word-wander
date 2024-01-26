@@ -8,3 +8,8 @@
 .externalNativeBuild
 .cxx
 .gradle/8.0/executionHistory/executionHistory.bin
+.gradle/8.0/executionHistory/executionHistory.bin
+*.bin
+*.lock
+.idea/gradle.xml
+.gradle/file-system.probe
