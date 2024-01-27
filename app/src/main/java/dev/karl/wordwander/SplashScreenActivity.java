@@ -1,5 +1,6 @@
 package dev.karl.wordwander;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashScreenActivity extends AppCompatActivity {
     SplashScreen splashScreen;
     @Override

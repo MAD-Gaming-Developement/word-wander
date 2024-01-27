@@ -33,7 +33,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class WordsDatasetHelper {
-    private static HashMap<String, Boolean> words = new HashMap<>();
+    private static final HashMap<String, Boolean> words = new HashMap<>();
     public static void initializeWordsList(Context context){
         try {
             InputStream inputStream = context.getResources().openRawResource(R.raw.words_dataset);
@@ -50,8 +50,7 @@ public class WordsDatasetHelper {
     public static String getNewRandomWord(){
         Random random = new Random();
         List<String> keys = new ArrayList<String>(words.keySet());
-        String randomKey = keys.get(random.nextInt(keys.size()));
-        return randomKey;
+        return keys.get(random.nextInt(keys.size()));
     }
     public static boolean checkIfWordExists(String word){
         return words.containsKey(word.toLowerCase());

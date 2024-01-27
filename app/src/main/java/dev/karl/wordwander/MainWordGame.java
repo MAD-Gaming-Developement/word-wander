@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import dev.karl.wordwander.databinding.ActivityMainWordGameBinding;
 
@@ -40,6 +42,7 @@ public class MainWordGame extends AppCompatActivity {
     GridAdapter gridAdapter;
     ArrayList<LetterTileModel> letterList = new ArrayList<>();
     int gridViewCursor, currentTurnCursor, triesCounter;
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +112,7 @@ public class MainWordGame extends AppCompatActivity {
             }
         });
     }
+    @SuppressLint("ClickableViewAccessibility")
     void setupEmptyGridView(){
         playSoundEffect(newTry);
         for (int q1 = 0 ; q1 < 26 ; q1++){
@@ -318,6 +322,7 @@ public class MainWordGame extends AppCompatActivity {
             else if (ripple == R.drawable.ripple_light_blue) keyColorIsBlue.put(tv, Boolean.TRUE);
         }
     }
+    @SuppressLint("SetTextI18n")
     void endGameDialog(boolean hasWon){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View v = getLayoutInflater().inflate(R.layout.gameover_dialog, null);
@@ -342,7 +347,7 @@ public class MainWordGame extends AppCompatActivity {
         builder.setCancelable(true);
 
         AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.show();
 
         button.setOnClickListener(view -> {
@@ -366,7 +371,7 @@ public class MainWordGame extends AppCompatActivity {
         builder.setCancelable(false);
 
         AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.show();
 
         button.setOnClickListener(view -> {
