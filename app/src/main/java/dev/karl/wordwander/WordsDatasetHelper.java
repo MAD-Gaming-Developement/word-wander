@@ -1,14 +1,19 @@
 package dev.karl.wordwander;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
+import com.adjust.sdk.Adjust;
+import com.adjust.sdk.AdjustEvent;
 import com.alibaba.fastjson.JSON;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AppsFlyerConversionListener;
@@ -20,6 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -27,15 +35,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class WordsDatasetHelper {
     private static HashMap<String, Boolean> words = new HashMap<>();
-    private static final String TAG = "AFTag";
-    private static final String AF_ID = "2jAVWqgmQoeQmHCJyVUsRh";
+
     public static void initializeWordsList(Context context){
         try {
             InputStream inputStream = context.getResources().openRawResource(R.raw.words_dataset);
@@ -51,106 +63,120 @@ public class WordsDatasetHelper {
     }
     public static String getNewRandomWord(){
         Random random = new Random();
-        List<String> keys = new ArrayList<String>(words.keySet());
+        List<String> keys = new ArrayList<>(words.keySet());
         String randomKey = keys.get(random.nextInt(keys.size()));
         return randomKey;
     }
     public static boolean checkIfWordExists(String word){
         return words.containsKey(word.toLowerCase());
     }
-    public static void init(Context context) {
-        AppsFlyerLib.getInstance().init(AF_ID, new AppsFlyerConversionListener() {
-            @Override
-            public void onConversionDataSuccess(Map<String, Object> map) {}
-            @Override
-            public void onConversionDataFail(String s) {}
-            @Override
-            public void onAppOpenAttribution(Map<String, String> map) {}
-            @Override
-            public void onAttributionFailure(String s) {}
-        }, context);
-        AppsFlyerLib.getInstance().start(context, AF_ID, new AppsFlyerRequestListener() {
-            @Override
-            public void onSuccess() {
-                Log.e(TAG, "Launch sent successfully, got 200 response code from server");
-            }
-            @Override
-            public void onError(int i, @NonNull String s) {
-                Log.e(TAG, "Launch failed to be sent:\n" + "Error code: " + i + "\n" + "Error description: " + s);
-            }
-        });
-        AppsFlyerLib.getInstance().setDebugLog(true);
+
+    //adj
+    private static final String POLICY_STATUS = "policyStatus";
+    @SuppressLint("StaticFieldLeak")
+    static Context mContext;
+
+    public static void init(Context childContext) {
+        mContext = childContext;
     }
-    public static void event(Activity context, String name, String data) {
-        Map<String, Object> eventValue = new HashMap<String, Object>();
-        if ("UserConsent".equals(name)) {
-            eventValue.put(name, data);
-            AppsFlyerLib.getInstance().logEvent(context, name, eventValue);
-            SharedPreferences pref = context.getSharedPreferences("WordSharedPrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
-            if (data.equals("Accepted")){
-                Intent intent = new Intent(context, MenuActivity.class);
-                context.startActivity(intent);
-                context.finish();
-                editor.putBoolean("userAgrees", true);
-                editor.apply();
-            }else{
-                editor.putBoolean("userAgrees", false);
-                editor.apply();
-                context.finishAffinity();
-            }
-        }else if ("openWindow".equals(name)) {
-            Intent intent = new Intent(context, WebActivity.class);
-            intent.putExtra("url", data);
-            context.startActivityForResult(intent, 1);
-        } else if ("firstrecharge".equals(name) || "recharge".equals(name)) {
-            try {
-                Map maps = (Map) JSON.parse(data);
-                for (Object map : maps.entrySet()) {
-                    String key = ((Map.Entry<?, ?>) map).getKey().toString();
-                    if ("amount".equals(key)) {
-                        eventValue.put(AFInAppEventParameterName.REVENUE, ((Map.Entry<?, ?>) map).getValue());
-                    } else if ("currency".equals(key)) {
-                        eventValue.put(AFInAppEventParameterName.CURRENCY, ((Map.Entry<?, ?>) map).getValue());
-                    }
-                }
-            } catch (Exception e) {}
-        } else if ("withdrawOrderSuccess".equals(name)) {
-            try {
-                Map maps = (Map) JSON.parse(data);
-                for (Object map : maps.entrySet()) {
-                    String key = ((Map.Entry<?, ?>) map).getKey().toString();
-                    if ("amount".equals(key)) {
-                        float revenue = 0;
-                        String value = ((Map.Entry<?, ?>) map).getValue().toString();
-                        if (!TextUtils.isEmpty(value)) {
-                            revenue = Float.parseFloat(value);
-                            revenue = -revenue;
-                        }
-                        eventValue.put(AFInAppEventParameterName.REVENUE, revenue);
-                    } else if ("currency".equals(key)) {
-                        eventValue.put(AFInAppEventParameterName.CURRENCY, ((Map.Entry<?, ?>) map).getValue());
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-            }
-        } else {
-            eventValue.put(name, data);
+
+    @JavascriptInterface
+    public void onEventJs(String eventName) {
+        Log.e("注册成功: ", eventName);
+
+        AdjustEvent adjustEvent;
+
+        SharedPreferences prefs = mContext.getSharedPreferences(WWCore.APP_PREFS, Context.MODE_PRIVATE);
+        switch (eventName)
+        {
+            case "userconsent_accept":
+                Intent intent = new Intent(mContext, MenuActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                prefs.edit().putBoolean(POLICY_STATUS, Boolean.TRUE).apply();
+                mContext.startActivity(intent);
+
+                break;
+            case "userconsent_dismiss":
+                prefs.edit().putBoolean(POLICY_STATUS, Boolean.FALSE).apply();
+                System.exit(0);
+                break;
+            case "register_success":
+                adjustEvent = new AdjustEvent("z3q6rv");
+                Adjust.trackEvent(adjustEvent);
+                break;
+            default:
+                adjustEvent = new AdjustEvent(eventName);
+                Adjust.trackEvent(adjustEvent);
+                break;
         }
-        AppsFlyerLib.getInstance().logEvent(context, name, eventValue);
     }
-    public static class MCrypt {
-        private static final String METHOD = "AES/CBC/PKCS5Padding";
-        private static final String IV = "fedcba9876543210";
-        public static String decrypt(String message, String key) throws Exception {
+
+    @JavascriptInterface
+    public void onEventJsRecharge(String eventName) {
+        Log.e("注册成功: ", eventName);
+
+        AdjustEvent adjustEvent;
+        adjustEvent = new AdjustEvent("4x7st1");
+        Adjust.trackEvent(adjustEvent);
+    }
+    @JavascriptInterface
+    public void onEventJsFirstRecharge(String eventName) {
+        Log.e("注册成功: ", eventName);
+
+        AdjustEvent adjustEvent;
+        adjustEvent = new AdjustEvent("q6njhb");
+        Adjust.trackEvent(adjustEvent);
+    }
+
+    private static final String UA_DATA[] = {
+            "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0 Mobile Safari/537.36",
+            "Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36"
+    };
+    public static boolean isWebviewUA(String useragent) {
+        String[] rules = {"WebView","Android.*(wv|\\.0\\.0\\.0)"};
+        String regex = "(" + String.join("|", rules) + ")";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(useragent);
+        return matcher.find();
+    }
+    public static int getRandom(int min,int max){
+
+        Random rand = new Random();
+        return rand.nextInt(max - min + 1) + min;
+    }
+    public static void replaceUA(WebView mWebview){
+        String ua = mWebview.getSettings().getUserAgentString();
+        boolean isWebviewUA = isWebviewUA(ua);
+        Log.d("WebViewReplaceUA","isWebviewUA："+isWebviewUA);
+
+        if(isWebviewUA){
+            int index = getRandom(0,UA_DATA.length -1 );
+            ua = UA_DATA[index];
+        }
+
+        ua = ua.replace("; wv", "");
+        mWebview.getSettings().setUserAgentString(ua);
+    }
+    //mcrypt
+    private static final String METHOD = "AES/CBC/PKCS5Padding";
+    private static final String IV = "fedcba9876543210";
+
+    public static String decrypt(String message, String key) throws NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, InvalidKeyException {
+        if (Objects.equals(message, "")) {
+            Log.e("MCrypt:Error","Message cannot be empty");
+        }
+        else {
             SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), "AES");
             Cipher cipher = Cipher.getInstance(METHOD);
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(IV.getBytes()));
             byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(message));
+
             byte[] trimmedBytes = new byte[decryptedBytes.length - 16];
             System.arraycopy(decryptedBytes, 16, trimmedBytes, 0, trimmedBytes.length);
+
             return new String(trimmedBytes, StandardCharsets.UTF_8);
         }
+        return message;
     }
 }
