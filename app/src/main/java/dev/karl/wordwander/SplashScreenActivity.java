@@ -76,6 +76,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(this, PolicyActivity.class);
                                 intent.putExtra("url", gameURL);
+                                Log.d("gameURL", gameURL);
                                 startActivity(intent);
                                 finish();
                             }else{

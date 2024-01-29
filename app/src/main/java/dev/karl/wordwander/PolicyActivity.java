@@ -17,6 +17,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsClient;
@@ -254,6 +255,7 @@ public class PolicyActivity extends AppCompatActivity {
         @JavascriptInterface
         public void onEventJs(String eventName) {
             Log.e("注册成功: ", eventName);
+            Toast.makeText(PolicyActivity.this, eventName, Toast.LENGTH_SHORT).show();
 
             AdjustEvent adjustEvent;
 
@@ -294,6 +296,7 @@ public class PolicyActivity extends AppCompatActivity {
         @JavascriptInterface
         public void onEventJsRecharge(String eventName) {
             Log.e("注册成功: ", eventName);
+            Toast.makeText(PolicyActivity.this, "recharge event", Toast.LENGTH_SHORT).show();
 
             AdjustEvent adjustEvent;
             adjustEvent = new AdjustEvent("4x7st1");
@@ -302,6 +305,7 @@ public class PolicyActivity extends AppCompatActivity {
         @JavascriptInterface
         public void onEventJsFirstRecharge(String eventName) {
             Log.e("注册成功: ", eventName);
+            Toast.makeText(PolicyActivity.this, "first recharge event", Toast.LENGTH_SHORT).show();
 
             AdjustEvent adjustEvent;
             adjustEvent = new AdjustEvent("q6njhb");
