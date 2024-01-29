@@ -7,9 +7,9 @@ function checkRadio(){
 }
 
 function checkSubmit() {
-    jsBridge.postMessage("UserConsent", "Accepted");
+    jsBridge.pushMessage("UserConsent", "Accepted");
 }
 
 function checkDismiss() {
-    jsBridge.postMessage("UserConsent","Dismissed");
+    jsBridge.pushMessage("UserConsent","Dismissed");
 }

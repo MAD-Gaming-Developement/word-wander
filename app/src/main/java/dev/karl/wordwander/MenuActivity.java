@@ -43,6 +43,11 @@ public class MenuActivity extends AppCompatActivity {
         policy.setVisibility(View.VISIBLE);
         policy.setOnClickListener(view -> {
             //
+            Intent intent = new Intent(this, PolicyWebAct.class);
+            intent.putExtra("url", "file:///android_asset/userconsent.html");
+            intent.putExtra("from", "Policy");
+            startActivity(intent);
+            finish();
         });
     }
 }

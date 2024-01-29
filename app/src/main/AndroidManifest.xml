@@ -18,6 +18,8 @@
         android:maxSdkVersion="32" />
 
     <application
+        android:name=".WWCore"
+        android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -52,9 +54,17 @@
             android:exported="false"
             android:theme="@style/Theme.Wordwander" />
         <activity
-            android:name=".WebActivity"
+            android:name=".PolicyWebAct"
             android:exported="false"
             android:theme="@style/Theme.Wordwander" />
+        <receiver
+            android:name=".NotifHelper"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="dev.karl.wordwander.NOTIFICATION_ACTION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
