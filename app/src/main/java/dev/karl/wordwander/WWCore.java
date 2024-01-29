@@ -37,11 +37,12 @@ public class WWCore extends Application {
     public static final String APP_TOKEN = "hw42bzquyi2o";
     public static final String APP_ENVIRONMENT = AdjustConfig.ENVIRONMENT_SANDBOX;
 
-    private Context context;
+    public Context context;
     @Override
     public void onCreate() {
         super.onCreate();
         this.context = getBaseContext();
+
 
         WordsDatasetHelper.init(this);
 

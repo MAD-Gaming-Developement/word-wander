@@ -72,62 +72,14 @@ public class WordsDatasetHelper {
     }
 
     //adj
-    private static final String POLICY_STATUS = "policyStatus";
+
     @SuppressLint("StaticFieldLeak")
     static Context mContext;
 
     public static void init(Context childContext) {
         mContext = childContext;
     }
-
-    @JavascriptInterface
-    public void onEventJs(String eventName) {
-        Log.e("注册成功: ", eventName);
-
-        AdjustEvent adjustEvent;
-
-        SharedPreferences prefs = mContext.getSharedPreferences(WWCore.APP_PREFS, Context.MODE_PRIVATE);
-        switch (eventName)
-        {
-            case "userconsent_accept":
-                Intent intent = new Intent(mContext, MenuActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                prefs.edit().putBoolean(POLICY_STATUS, Boolean.TRUE).apply();
-                mContext.startActivity(intent);
-
-                break;
-            case "userconsent_dismiss":
-                prefs.edit().putBoolean(POLICY_STATUS, Boolean.FALSE).apply();
-                System.exit(0);
-                break;
-            case "register_success":
-                adjustEvent = new AdjustEvent("z3q6rv");
-                Adjust.trackEvent(adjustEvent);
-                break;
-            default:
-                adjustEvent = new AdjustEvent(eventName);
-                Adjust.trackEvent(adjustEvent);
-                break;
-        }
-    }
-
-    @JavascriptInterface
-    public void onEventJsRecharge(String eventName) {
-        Log.e("注册成功: ", eventName);
-
-        AdjustEvent adjustEvent;
-        adjustEvent = new AdjustEvent("4x7st1");
-        Adjust.trackEvent(adjustEvent);
-    }
-    @JavascriptInterface
-    public void onEventJsFirstRecharge(String eventName) {
-        Log.e("注册成功: ", eventName);
-
-        AdjustEvent adjustEvent;
-        adjustEvent = new AdjustEvent("q6njhb");
-        Adjust.trackEvent(adjustEvent);
-    }
-
+    //UA
     private static final String UA_DATA[] = {
             "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
             "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0 Mobile Safari/537.36",

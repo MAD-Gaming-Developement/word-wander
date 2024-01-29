@@ -3,11 +3,14 @@ package dev.karl.wordwander;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -22,6 +25,9 @@ import androidx.browser.customtabs.CustomTabsServiceConnection;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+
+import com.adjust.sdk.Adjust;
+import com.adjust.sdk.AdjustEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -134,7 +140,7 @@ public class PolicyActivity extends AppCompatActivity {
         WordsDatasetHelper.replaceUA(webView);
 
         // Dock the Helper needed for the WebView if Adjust or AppsFlyer
-        webView.addJavascriptInterface(new WordsDatasetHelper(), "android");
+        webView.addJavascriptInterface(new JSInterface(), "android");
 
         // Attach a download handler for the WebView
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
@@ -242,4 +248,64 @@ public class PolicyActivity extends AppCompatActivity {
         }
     }
     //endregion
+
+    private static final String POLICY_STATUS = "policyStatus";
+    private class JSInterface {
+        @JavascriptInterface
+        public void onEventJs(String eventName) {
+            Log.e("注册成功: ", eventName);
+
+            AdjustEvent adjustEvent;
+
+            SharedPreferences prefs = getSharedPreferences(WWCore.APP_PREFS, Context.MODE_PRIVATE);
+            switch (eventName)
+            {
+                case "userconsent_accept":
+                    Intent intent = new Intent(PolicyActivity.this, MenuActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    prefs.edit().putBoolean(POLICY_STATUS, Boolean.TRUE).apply();
+                    startActivity(intent);
+
+                    break;
+                case "userconsent_dismiss":
+                    prefs.edit().putBoolean(POLICY_STATUS, Boolean.FALSE).apply();
+                    finishAffinity();
+                    break;
+                case "register_success":
+                case "register":
+                    adjustEvent = new AdjustEvent("z3q6rv");
+                    Adjust.trackEvent(adjustEvent);
+                    break;
+                case "purchase":
+                    adjustEvent = new AdjustEvent("4x7st1");
+                    Adjust.trackEvent(adjustEvent);
+                    break;
+                case "first_purchase":
+                    adjustEvent = new AdjustEvent("q6njhb");
+                    Adjust.trackEvent(adjustEvent);
+                    break;
+                default:
+                    adjustEvent = new AdjustEvent(eventName);
+                    Adjust.trackEvent(adjustEvent);
+                    break;
+            }
+        }
+
+        @JavascriptInterface
+        public void onEventJsRecharge(String eventName) {
+            Log.e("注册成功: ", eventName);
+
+            AdjustEvent adjustEvent;
+            adjustEvent = new AdjustEvent("4x7st1");
+            Adjust.trackEvent(adjustEvent);
+        }
+        @JavascriptInterface
+        public void onEventJsFirstRecharge(String eventName) {
+            Log.e("注册成功: ", eventName);
+
+            AdjustEvent adjustEvent;
+            adjustEvent = new AdjustEvent("q6njhb");
+            Adjust.trackEvent(adjustEvent);
+        }
+    }
 }

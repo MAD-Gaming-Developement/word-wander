@@ -1,5 +1,6 @@
 package dev.karl.wordwander;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -69,7 +70,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                             if(Boolean.parseBoolean(appStatus)){
                                 // Store SharedPrefs - appStatus + gameUrl
-                                SharedPreferences appPreferences = getSharedPreferences(WWCore.APP_PREFS, Context.MODE_PRIVATE);
+                                SharedPreferences appPreferences = getSharedPreferences("WordSharedPrefs", Context.MODE_PRIVATE);
                                 appPreferences.edit().putBoolean(APPSTATS, Boolean.parseBoolean(appStatus)).apply();
                                 appPreferences.edit().putString(GAME_URL, gameURL).apply();
 
@@ -78,10 +79,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             }else{
-                                SharedPreferences pref = this.getSharedPreferences(WWCore.APP_PREFS, Context.MODE_PRIVATE);
-                                Boolean policyStats = pref.getBoolean(POLICY_STATUS, Boolean.FALSE);
+
+                                SharedPreferences pref = getSharedPreferences("WordSharedPrefs", Context.MODE_PRIVATE);
+                                Boolean policyStats = pref.getBoolean(POLICY_STATUS, false);
+                                Log.d("booleanSP", policyStats+":ss");
                                 Intent intent;
-                                if(Boolean.TRUE.equals(policyStats)){
+                                if(policyStats){
                                     // If Policy Already Accepted call your Side A activity
                                     intent = new Intent(this, MenuActivity.class);
                                 }else{
