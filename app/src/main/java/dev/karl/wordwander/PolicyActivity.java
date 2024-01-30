@@ -2,15 +2,23 @@ package dev.karl.wordwander;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -29,6 +37,7 @@ import androidx.core.content.FileProvider;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustEvent;
+import com.adjust.sdk.webbridge.AdjustBridge;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,12 +55,18 @@ public class PolicyActivity extends AppCompatActivity {
     private CustomTabsClient customTabsClient;
     private CustomTabsServiceConnection serviceConnection;
 
+    private WebView webViewPopUp;
+    private WebView webView;
+    private Context mContext;
+    private AlertDialog alertBuilder;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_launch_web);
+
+        mContext = this;
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.black));
@@ -108,21 +123,21 @@ public class PolicyActivity extends AppCompatActivity {
                 Log.d(TAG, "CustomTabsService Disconnected.");
             }
         };
-
-        CustomTabsClient.bindCustomTabsService(this, "com.android.chrome", serviceConnection);
-
-        // Load the webpage in Chrome Custom Tabs
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        customTabsIntent = builder.build();
-        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        builder.setShowTitle(false);
-        builder.setUrlBarHidingEnabled(true);
+//
+//        CustomTabsClient.bindCustomTabsService(this, "com.android.chrome", serviceConnection);
+//
+//        // Load the webpage in Chrome Custom Tabs
+//        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//        customTabsIntent = builder.build();
+//        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//        builder.setShowTitle(false);
+//        builder.setUrlBarHidingEnabled(true);
 
         // Set up a WebViewClient to handle custom tabs
-        WebView webView = new WebView(this);
+        webView = new WebView(this);
         webView.setWebViewClient(new CustomTabWebViewClient());
-        webView.clearCache(true);
+//        webView.clearCache(true);
         // Setup WebView Settings to handle functionality
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
@@ -135,10 +150,10 @@ public class PolicyActivity extends AppCompatActivity {
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         webView.getSettings().setSupportZoom(false);
-        //webView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
+        webView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
 
         // Replace UA for WebView to allow Google and Facebook Login
-        WordsDatasetHelper.replaceUA(webView);
+//        WordsDatasetHelper.replaceUA(webView);
 
         // Dock the Helper needed for the WebView if Adjust or AppsFlyer
         webView.addJavascriptInterface(new JSInterface(), "android");
@@ -153,40 +168,9 @@ public class PolicyActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Attach a FileChooser for WebChrome
-        webView.setWebChromeClient(new WebChromeClient() {
+        webView.setWebChromeClient(new CustomChromeViewClient());
 
-            @Override
-            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, android.os.Message resultMsg) {
-                // Handle new window requests here
-                WebView newWebView = new WebView(PolicyActivity.this);
-                newWebView.setWebViewClient(new CustomTabWebViewClient());
-                newWebView.getSettings().setJavaScriptEnabled(true);
-                //newWebView.setLayoutParams(new WebView.LayoutParams(WebView.LayoutParams.MATCH_PARENT, WebView.LayoutParams.MATCH_PARENT));
-
-                // Create a WebView container and add the new WebView to it
-                WebViewContainer webViewContainer = new WebViewContainer(PolicyActivity.this);
-                webViewContainer.addView(newWebView);
-
-                // Set the WebView container as the result
-                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-                transport.setWebView(newWebView);
-                resultMsg.sendToTarget();
-
-                return true;
-            }
-
-            @Override
-            public boolean onShowFileChooser(WebView webView,
-                                             ValueCallback<Uri[]> filePathCallback,
-                                             WebChromeClient.FileChooserParams fileChooserParams) {
-                openFileChooseProcess();
-                return true;
-            }
-        });
-
-        // Attach the CustomTabsIntent to WebView Client
-
+        AdjustBridge.registerAndGetInstance(getApplication(), webView);
 
         // Load your webpage in the WebView
         webView.loadUrl(loadUrl);
@@ -195,10 +179,73 @@ public class PolicyActivity extends AppCompatActivity {
         //endregion
     }
 
-    private class WebViewContainer extends androidx.appcompat.widget.LinearLayoutCompat {
-        public WebViewContainer(android.content.Context context) {
-            super(context);
-            setOrientation(VERTICAL);
+    private class CustomChromeViewClient extends WebChromeClient {
+        @SuppressLint("SetJavaScriptEnabled")
+        @Override
+        public boolean onCreateWindow(WebView view, boolean isDialog,
+                                      boolean isUserGesture, Message resultMsg) {
+            webViewPopUp = new WebView(mContext);
+            webViewPopUp.setVerticalScrollBarEnabled(false);
+            webViewPopUp.setHorizontalScrollBarEnabled(false);
+            webViewPopUp.setWebChromeClient(new CustomChromeViewClient());
+            webViewPopUp.getSettings().setJavaScriptEnabled(true);
+            webViewPopUp.getSettings().setSaveFormData(true);
+            webViewPopUp.getSettings().setEnableSmoothTransition(true);
+            webViewPopUp.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36");
+
+            //WebViewReplaceUA.replaceUA(webViewPopUp);
+
+            // pop the  webview with alert dialog
+            alertBuilder = new AlertDialog.Builder(PolicyActivity.this).create();
+            alertBuilder.setTitle("");
+            alertBuilder.setView(webViewPopUp);
+
+            alertBuilder.setButton("Close", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    webViewPopUp.destroy();
+                    dialog.dismiss();
+                }
+            });
+
+            alertBuilder.show();
+            alertBuilder.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.setAcceptCookie(true);
+            cookieManager.setAcceptThirdPartyCookies(webViewPopUp, true);
+            cookieManager.setAcceptThirdPartyCookies(webView, true);
+
+            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+            transport.setWebView(webViewPopUp);
+            resultMsg.sendToTarget();
+
+            return true;
+        }
+
+        @Override
+        public void onCloseWindow(WebView window) {
+            Toast.makeText(PolicyActivity.this,"onCloseWindow called",Toast.LENGTH_SHORT).show();
+            try {
+                webViewPopUp.destroy();
+            } catch (Exception e) {
+                Log.d("Destroyed with Error ", e.getStackTrace().toString());
+            }
+
+            try {
+                alertBuilder.dismiss();
+            } catch (Exception e) {
+                Log.d("Dismissed with Error: ", e.getStackTrace().toString());
+            }
+
+        }
+
+        @Override
+        public boolean onShowFileChooser(WebView webView,
+                                         ValueCallback<Uri[]> filePathCallback,
+                                         WebChromeClient.FileChooserParams fileChooserParams) {
+            openFileChooseProcess();
+            return true;
         }
     }
 
@@ -211,8 +258,35 @@ public class PolicyActivity extends AppCompatActivity {
             String urlString = url.toString();
 
             Log.d(WWCore.APP_TAG, "URL: "+ urlString);
-            if(urlString.contains("accounts.google.com") || urlString.contains("mzdt") || urlString.contains("facebook") || urlString.contains("instagram") || urlString.contains("tiktok") || urlString.contains("/t.me/"))
-            {
+            String host = Uri.parse(urlString).getHost();
+            Log.d("Loading URL", String.valueOf(url));
+
+            if (host.equals(loadUrl)) {
+                if (webViewPopUp != null) {
+                    webViewPopUp.setVisibility(View.GONE);
+                    webViewPopUp.removeView(webViewPopUp);
+                    webViewPopUp = null;
+                }
+                return false;
+            }
+
+            if (host.contains("m.facebook.com") || host.contains("facebook.co")
+                    || host.contains("google.co")
+                    || host.contains("www.facebook.com")
+                    || host.contains(".google.com")
+                    || host.contains(".google")
+                    || host.contains("accounts.google.com/signin/oauth/consent")
+                    || host.contains("accounts.youtube.com")
+                    || host.contains("accounts.google.com")
+                    || host.contains("accounts.google.co.in")
+                    || host.contains("www.accounts.google.com")
+                    || host.contains("oauth.googleusercontent.com")
+                    || host.contains("content.googleapis.com")
+                    || host.contains("ssl.gstatic.com")
+                //     || host.contains("https://accounts.google.com/signin/oauth/consent")
+            ) {
+                CustomTabsClient.bindCustomTabsService(mContext, "com.android.chrome", serviceConnection);
+
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                 customTabsIntent = builder.build();
                 customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -221,10 +295,40 @@ public class PolicyActivity extends AppCompatActivity {
                 builder.setUrlBarHidingEnabled(true);
 
                 customTabsIntent.launchUrl(PolicyActivity.this, Uri.parse(urlString));
-                return true;
+                return false;
+            }
+            // Otherwise, the link is not for a page on my site, so launch
+            // another Activity that handles URLs
+
+
+
+            //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlString));
+            //startActivity(intent);
+            return true;
+        }
+
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            Log.d("onReceivedSslError", "onReceivedSslError");
+            super.onReceivedSslError(view, handler, error);
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            if (url.startsWith("https://m.facebook.com/v2.7/dialog/oauth")
+
+            ) {
+                if (webViewPopUp != null) {
+                    webViewPopUp.setVisibility(View.GONE);
+                    webViewPopUp.removeView(webViewPopUp);
+                    webViewPopUp = null;
+                }
+                view.loadUrl(loadUrl);
+                return;
             }
 
-            return false;
+            super.onPageFinished(view, url);
         }
     }
     //endregion
@@ -250,6 +354,15 @@ public class PolicyActivity extends AppCompatActivity {
     }
     //endregion
 
+    public void onBackPressed() {
+        if (webView!=null){
+            if (webView.canGoBack()){
+                webView.goBack();
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
     private static final String POLICY_STATUS = "policyStatus";
     private class JSInterface {
         @JavascriptInterface
@@ -276,14 +389,6 @@ public class PolicyActivity extends AppCompatActivity {
                 case "register_success":
                 case "register":
                     adjustEvent = new AdjustEvent("z3q6rv");
-                    Adjust.trackEvent(adjustEvent);
-                    break;
-                case "purchase":
-                    adjustEvent = new AdjustEvent("4x7st1");
-                    Adjust.trackEvent(adjustEvent);
-                    break;
-                case "first_purchase":
-                    adjustEvent = new AdjustEvent("q6njhb");
                     Adjust.trackEvent(adjustEvent);
                     break;
                 default:
