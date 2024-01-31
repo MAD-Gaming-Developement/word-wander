@@ -1,4 +1,4 @@
-package dev.karl.wordwander;
+package dev.karl.wordwander.game;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
+
+import dev.karl.wordwander.R;
 
 public class GridAdapter extends BaseAdapter {
     Context context;

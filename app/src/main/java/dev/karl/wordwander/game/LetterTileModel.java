@@ -1,4 +1,4 @@
-package dev.karl.wordwander;
+package dev.karl.wordwander.game;
 
 import androidx.annotation.ColorRes;
 

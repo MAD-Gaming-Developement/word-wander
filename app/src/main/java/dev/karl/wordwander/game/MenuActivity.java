@@ -1,4 +1,4 @@
-package dev.karl.wordwander;
+package dev.karl.wordwander.game;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -6,8 +6,9 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.view.View;
 import android.widget.TextView;
+
+import dev.karl.wordwander.R;
 
 
 public class MenuActivity extends AppCompatActivity {
@@ -40,13 +41,12 @@ public class MenuActivity extends AppCompatActivity {
         exit.setOnClickListener(view -> {
             finishAffinity();
         });
-        policy.setVisibility(View.VISIBLE);
         policy.setOnClickListener(view -> {
-            Intent intent = new Intent(this, PolicyActivity.class);
-            String gameURL = "file:///android_asset/userconsent.html";
-            intent.putExtra("url", gameURL);
-            startActivity(intent);
-            finish();
+//            Intent intent = new Intent(this, PolicyActivity.class);
+//            String gameURL = "file:///android_asset/userconsent.html";
+//            intent.putExtra("url", gameURL);
+//            startActivity(intent);
+//            finish();
         });
     }
 }

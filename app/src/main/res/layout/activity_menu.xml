@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue"
-    tools:context=".MenuActivity">
+    tools:context=".game.MenuActivity">
     <ImageView
         android:importantForAccessibility="no"
         android:layout_width="match_parent"
@@ -68,7 +68,7 @@
         android:layout_marginHorizontal="24sp"
         />
     <TextView
-        android:visibility="visible"
+        android:visibility="invisible"
         android:id="@+id/tvPolicyBtn"
         android:layout_width="match_parent"
         android:layout_height="50sp"

@@ -1,10 +1,12 @@
-package dev.karl.wordwander;
+package dev.karl.wordwander.game;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
 import android.widget.TextView;
+
+import dev.karl.wordwander.R;
 
 public class HowToGame extends AppCompatActivity {
     TextView btn;

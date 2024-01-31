@@ -1,4 +1,4 @@
--keep class dev.karl.wordwander.** { *; }
+
 
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile

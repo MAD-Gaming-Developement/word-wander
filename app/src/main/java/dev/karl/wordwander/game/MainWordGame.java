@@ -1,4 +1,4 @@
-package dev.karl.wordwander;
+package dev.karl.wordwander.game;
 
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dev.karl.wordwander.R;
 import dev.karl.wordwander.databinding.ActivityMainWordGameBinding;
 
 public class MainWordGame extends AppCompatActivity {

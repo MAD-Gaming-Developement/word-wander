@@ -14,4 +14,10 @@
     <color name="light_blue">#1C99CE</color>
     <color name="orange">#DD7A08</color>
     <color name="transparent">#00000000</color>
+
+    <color name="colorAccent">#ffff4081</color>
+    <color name="colorDw">#ff1086e6</color>
+    <color name="colorDwDark">#ff1d9aff</color>
+    <color name="colorPrimary">#ff3f51b5</color>
+    <color name="colorPrimaryDark">#ff303f9f</color>
 </resources>
