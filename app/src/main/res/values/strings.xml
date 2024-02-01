@@ -3,10 +3,10 @@
     <string name="instructions_txt_1">Guess the hidden word in 6 tries.\n\nEach guess must be a valid 5 letter word, you cannot enter random letters. Hit the enter button to submit the guess.\n\nAfter your submission, the color of the tiles will change as in the example below.</string>
     <string name="instructions_txt_2">The letter R is in the word and in the correct spot.\n\nThe letters A and D are in the word but in the wrong spot.\n\nThe letters E and S are not in the word in any spot.</string>
 
-    <string name="adjust_app_token">1</string> <!-- Replace Value with Adjust Dev Key -->
-    <string name="adjust_event_first_recharge_success">1</string>
-    <string name="adjust_event_recharge_success">1</string>
-    <string name="adjust_event_register_success">1</string>
+    <string name="adjust_app_token">r3e0sdt3afi8</string> <!-- Replace Value with Adjust Dev Key -->
+    <string name="adjust_event_first_recharge_success">8kz5fq</string>
+    <string name="adjust_event_recharge_success">1cohnc</string>
+    <string name="adjust_event_register_success">1th8wk</string>
     <string name="adjust_switch">1</string>
 
     <string name="app_api_url">https://backend.madgamingdev.com/api/gameid?appid=</string>

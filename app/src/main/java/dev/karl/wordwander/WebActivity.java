@@ -2,6 +2,7 @@ package dev.karl.wordwander;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -70,9 +71,12 @@ import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import dev.karl.wordwander.game.MenuActivity;
+import dev.karl.wordwander.game.SplashScreenActivity;
 import dev.karl.wordwander.utils.AppInfoModel;
 import dev.karl.wordwander.utils.Base64;
 import dev.karl.wordwander.utils.BaseActivity;
@@ -610,5 +614,53 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         CommonUtil.log("WebActivity onDestroy~");
+    }
+
+
+    private Map<Integer, Runnable> allowablePermissionRunnables = new HashMap();
+    private Map<Integer, Runnable> disallowablePermissionRunnables = new HashMap();
+    private void showConfirmDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
+        builder.setCancelable(false);
+        builder.setMessage("游戏资源需要更新下载,需要开启访问读写权限哦!~");
+        builder.setPositiveButton("确定", (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.setNegativeButton("关闭", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            WebActivity welcomeActivity = WebActivity.this;
+            welcomeActivity.back(welcomeActivity.mContext);
+        });
+        builder.show();
+    }
+
+    private void showNormalDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
+        builder.setCancelable(false);
+        builder.setMessage("游戏资源需要更新下载,请开启访问读写权限哦!~");
+        builder.setPositiveButton("确定", (dialogInterface, i) -> {
+            CommonUtil.toSelfSetting(WebActivity.this.mContext);
+            dialogInterface.dismiss();
+        });
+        builder.setNegativeButton("关闭", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            WebActivity welcomeActivity = WebActivity.this;
+            welcomeActivity.back(welcomeActivity.mContext);
+        });
+        builder.show();
+    }
+
+    public void onRequestPermissionsResult(int i, String[] strArr, int[] iArr) {
+        super.onRequestPermissionsResult(i, strArr, iArr);
+        if (iArr[0] == 0) {
+            Runnable runnable = this.allowablePermissionRunnables.get(Integer.valueOf(i));
+            if (runnable != null) {
+                runnable.run();
+                return;
+            }
+            return;
+        }
+        Runnable runnable2 = this.disallowablePermissionRunnables.get(Integer.valueOf(i));
+        if (runnable2 != null) {
+            runnable2.run();
+        }
     }
 }
