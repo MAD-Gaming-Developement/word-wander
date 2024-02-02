@@ -63,12 +63,6 @@ public class WebViewModel {
         void progress(int i);
     }
 
-    public void onPause() {
-    }
-
-    public void onStop() {
-    }
-
     public WebViewModel(Activity activity, String str, JS2Android jS2Android, WebLoadStatus webLoadStatus) {
         this.callback = webLoadStatus;
         init(activity, str, jS2Android);
@@ -352,36 +346,6 @@ public class WebViewModel {
                 WebViewModel.this.view_bottom_text.setVisibility(View.GONE);
                 new Handler().postDelayed(() -> {
                 }, 500);
-                CommonUtil.log("web: " + str + "\tFinish");
-            }
-
-            public boolean parseScheme(String str) {
-                if (TextUtils.isEmpty(str)) {
-                    return false;
-                }
-                CommonUtil.log("parseScheme " + str);
-                if (str.toLowerCase().contains("platformapi/startApp")) {
-                    return true;
-                }
-                if (Build.VERSION.SDK_INT > 23 && str.toLowerCase().contains("platformapi") && str.toLowerCase().contains("startApp")) {
-                    return true;
-                }
-                if (!str.toLowerCase().contains("baiduboxapp://")) {
-                    return false;
-                }
-                Log.e("======", "baidubox");
-                return true;
-            }
-
-            public boolean checkJumpBrowser(String str) {
-                if (TextUtils.isEmpty(str)) {
-                    return false;
-                }
-                CommonUtil.log("checkJumpBrowser  == " + str);
-                if (!str.toLowerCase().contains("tg://") && !str.toLowerCase().contains("whatsapp") && !str.toLowerCase().contains("t.me")) {
-                    return false;
-                }
-                return true;
             }
         });
         this.mWebview.addJavascriptInterface(this.jsObj, "android");
@@ -396,7 +360,6 @@ public class WebViewModel {
             if (parseUri.resolveActivity(this.mContext.getPackageManager()) == null) {
                 return false;
             }
-            CommonUtil.log("=================== URI_INTENT_SCHEME " + webResourceRequest.getUrl().toString());
             parseUri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             parseUri.setData(webResourceRequest.getUrl());
             this.mContext.startActivity(parseUri);
@@ -408,7 +371,6 @@ public class WebViewModel {
     }
 
     public void showErrorPage() {
-        CommonUtil.log("show error page");
         View view = this.view_webview_load_error;
         if (view != null) {
             view.setEnabled(true);
@@ -434,77 +396,8 @@ public class WebViewModel {
         }
     }
 
-    public void synCookies(Context context, String str, List<String> list, boolean z) {
-        CookieManager instance = CookieManager.getInstance();
-        instance.setAcceptCookie(true);
-        if (Build.VERSION.SDK_INT >= 21) {
-            instance.setAcceptThirdPartyCookies(this.mWebview, true);
-        }
-        if (z) {
-            instance.removeSessionCookie();
-            instance.removeAllCookie();
-        }
-        if (!(str == null || list == null)) {
-            for (int i = 0; i < list.size(); i++) {
-                instance.setCookie(str, list.get(i));
-            }
-        }
-        if (Build.VERSION.SDK_INT >= 22) {
-            CookieManager.getInstance().flush();
-            return;
-        }
-        CookieSyncManager.createInstance(this.mContext);
-        CookieSyncManager.getInstance().sync();
-    }
-
-    public void clearCookies() {
-        CookieManager instance = CookieManager.getInstance();
-        instance.removeSessionCookie();
-        instance.removeAllCookie();
-        if (Build.VERSION.SDK_INT >= 22) {
-            CookieManager.getInstance().flush();
-            return;
-        }
-        CookieSyncManager.createInstance(this.mContext);
-        CookieSyncManager.getInstance().sync();
-    }
-
-    public void clearCache() {
-        this.mWebview.clearCache(true);
-    }
-
-    public void refresh() {
-        this.mWebview.reload();
-    }
-
-    public void onResume() {
-        WebView webView;
-        if (!this.isFirstLoading && (webView = this.mWebview) != null) {
-            webView.stopLoading();
-        }
-    }
-
-    public void onDestroy() {
-        WebView webView = this.mWebview;
-        if (webView != null) {
-            webView.loadUrl("about:blank");
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    WebViewModel.this.mWebview.removeAllViews();
-                    WebViewModel.this.mWebview.destroy();
-                    WebView unused = WebViewModel.this.mWebview = null;
-                    CommonUtil.log("web -> destroy");
-                }
-            }, 100);
-        }
-    }
-
     public View getContentView() {
         return this.view_rootview;
-    }
-
-    public void removeAllViews() {
-        this.view_rootview.removeAllViews();
     }
 
     public WebView getWebview() {

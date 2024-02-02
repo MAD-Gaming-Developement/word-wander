@@ -3,10 +3,8 @@ package dev.karl.wordwander.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.Map;
-
 public class LocalStorageHelper {
-    public static final String PREFERENCE_NAME = "com.baison.localstorage";
+    public static final String PREFERENCE_NAME = "dev.karl.wordwander";
     private static volatile LocalStorageHelper mInstance;
     Context mContext;
     private SharedPreferences.Editor mEditor = this.mSharedPreferences.edit();
@@ -39,9 +37,5 @@ public class LocalStorageHelper {
     public void removeString(String str) {
         this.mEditor.remove(str);
         this.mEditor.commit();
-    }
-
-    public Map<String, String> getAll() {
-        return (Map<String, String>) this.mSharedPreferences.getAll();
     }
 }

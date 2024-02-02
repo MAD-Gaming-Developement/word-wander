@@ -6,9 +6,9 @@ function checkRadio(){
     contbtn.disabled = !(condition.checked && policy.checked);
 }
 function checkSubmit() {
-    android.onEventJs('userconsent_accept');
+    android.trackAdjustEvent('userconsent_accept');
 }
 
 function checkDismiss() {
-    android.onEventJs('userconsent_dismiss');
+    android.trackAdjustEvent('userconsent_dismiss');
 }

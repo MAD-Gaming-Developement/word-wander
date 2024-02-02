@@ -43,5 +43,3 @@
 
 -dontwarn com.google.firebase.iid.FirebaseInstanceId*
 -dontwarn com.google.firebase.iid.InstanceIdResult*
-
--keep class com.google.firebase.messaging.FirebaseMessagingService { *; }

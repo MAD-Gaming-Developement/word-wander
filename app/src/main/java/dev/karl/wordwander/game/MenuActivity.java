@@ -42,11 +42,8 @@ public class MenuActivity extends AppCompatActivity {
             finishAffinity();
         });
         policy.setOnClickListener(view -> {
-//            Intent intent = new Intent(this, PolicyActivity.class);
-//            String gameURL = "file:///android_asset/userconsent.html";
-//            intent.putExtra("url", gameURL);
-//            startActivity(intent);
-//            finish();
+            Intent intent = new Intent(this, PolicyActivity.class);
+            startActivity(intent);
         });
     }
 }

@@ -2,7 +2,6 @@ package dev.karl.wordwander;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -49,10 +48,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.LoggingBehavior;
 import com.facebook.appevents.AppEventsConstants;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.internal.AnalyticsEvents;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
@@ -60,7 +56,6 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
@@ -71,12 +66,9 @@ import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import dev.karl.wordwander.game.MenuActivity;
-import dev.karl.wordwander.game.SplashScreenActivity;
 import dev.karl.wordwander.utils.AppInfoModel;
 import dev.karl.wordwander.utils.Base64;
 import dev.karl.wordwander.utils.BaseActivity;
@@ -87,7 +79,6 @@ import dev.karl.wordwander.utils.MCryptHelper;
 import dev.karl.wordwander.utils.WebViewModel;
 
 public class WebActivity extends BaseActivity implements View.OnClickListener {
-
     private boolean canExit = false;
     private String deepLinkUrl = "";
     private final Handler handler_exit = new Handler(Looper.myLooper());
@@ -99,7 +90,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
     private WebView mWebView;
     private SignInClient oneTapClient;
     private PopupWindow popupWindow_html;
-    private BeginSignInRequest signInRequest;
     private Runnable task_exit = () -> {
         boolean unused = WebActivity.this.canExit = false;
     };
@@ -116,14 +106,8 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
     public void onCreate(Bundle bundle) {
         splashScreen = SplashScreen.installSplashScreen(this);
 
-
         super.onCreate(bundle);
         this.mContext = this;
-
-        FacebookSdk.fullyInitialize();
-        AppEventsLogger.activateApp(this.getApplication());
-        FacebookSdk.setIsDebugEnabled(true);
-        FacebookSdk.addLoggingBehavior(LoggingBehavior.APP_EVENTS);
 
         setContentView(R.layout.activity_web);
         getWindow().addFlags(128);
@@ -133,15 +117,8 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         splashScreen.setKeepOnScreenCondition(() -> true);
 
-        //
-
         initRemoteConfig();
-//        String urlStr = getIntent().getStringExtra("url");
-//        if (!getIntent().getStringExtra("url").isEmpty()){
-//            WebActivity.this.init(urlStr);
-//        }
         initAdjust();
-
     }
 
     @Override
@@ -156,20 +133,15 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void initRemoteConfig() {
-
-        // Implement Jump Logic from Backend
         handleApiRequest(this);
-
-
     }
 
     private void initAdjust() {
         if (AppEventsConstants.EVENT_PARAM_VALUE_YES.equals(getString(R.string.adjust_switch))) {
             String string = getString(R.string.adjust_app_token);
-            String str = CommonUtil.isDebugEnv(context) ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
-            CommonUtil.log("AdjustConfig Env = " + str);
+            String str = AdjustConfig.ENVIRONMENT_PRODUCTION;
             Adjust.onCreate(new AdjustConfig(this, string, str));
-            CommonUtil.log("AdjustConfig Adid = " + Adjust.getAdid());
+
         }
     }
 
@@ -214,18 +186,12 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void sendDeepLinkUrl() {
-        CommonUtil.log("sendDeepLinkUrl:" + this.deepLinkUrl);
         String str = "onDeepLinkUrlCallback('" + this.deepLinkUrl + "')";
         WebViewModel webViewModel2 = this.webViewModel;
         if (webViewModel2 != null) {
             webViewModel2.callJS(str);
         }
     }
-
-    public void handleFacebookAccessToken(AccessToken accessToken) {
-        CommonUtil.log("handleFacebookAccessToken:" + accessToken);
-    }
-
 
     @Override
     public void onResume() {
@@ -405,7 +371,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
         }, 2000);
     }
 
-
     private class LocJS2Android extends WebViewModel.JS2Android {
         public LocJS2Android(Activity activity) {
             super(activity);
@@ -423,7 +388,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void login_facebook() {
-            CommonUtil.log("login_facebook");
             if (!CommonUtil.checkAppInstalled(WebActivity.this.mContext, "com.facebook.katana")) {
                 CommonUtil.openGooglePlay(WebActivity.this.mContext, "com.facebook.katana");
                 return;
@@ -442,7 +406,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void logout_facebook() {
-            CommonUtil.log("logout_facebook");
             AccessToken currentAccessToken = AccessToken.getCurrentAccessToken();
             if (currentAccessToken != null && !currentAccessToken.isExpired()) {
                 LoginManager.getInstance().logOut();
@@ -451,7 +414,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void sharelink_facebook(final String str) {
-            CommonUtil.log("sharelink_facebook : " + str);
             if (!CommonUtil.checkAppInstalled(WebActivity.this.mContext, "com.facebook.katana")) {
                 CommonUtil.openGooglePlay(WebActivity.this.mContext, "com.facebook.katana");
             } else {
@@ -479,13 +441,11 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void getDeepLinkUrl() {
-            CommonUtil.log("getDeepLinkUrl()");
             WebActivity.this.sendDeepLinkUrl();
         }
 
         @JavascriptInterface
         public void getAppInfo() {
-            CommonUtil.log("native.getAppInfo()");
             String deviceId = DeviceIdUtil.getDeviceId(WebActivity.this.mContext);
             String appVersionName = CommonUtil.getAppVersionName(WebActivity.this.mContext);
             String channleID = CommonUtil.getChannleID();
@@ -503,7 +463,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
             }
             String str = "nativeCallback.getAppInfo('" + new Gson().toJson((Object) appInfoModel) + "')";
             WebActivity.this.mContext.webViewModel.callJS(str);
-            CommonUtil.log(str);
         }
 
         @JavascriptInterface
@@ -526,7 +485,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void openURL(String str) {
-            CommonUtil.log("native.openURL()");
             if (!TextUtils.isEmpty(str)) {
                 if (!str.toLowerCase().startsWith("http")) {
                     str = "http://" + str;
@@ -537,7 +495,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void openWebView(final String str) {
-            CommonUtil.log("native.openWebView() " + str);
             if (!TextUtils.isEmpty(str)) {
                 WebActivity.this.mContext.runOnUiThread(() -> WebActivity.this.showHtmlContentView(str));
             }
@@ -545,7 +502,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void trackAdjustEvent(String str) {
-            CommonUtil.log("native.AdjustTrackEvent() " + str);
             if (AppEventsConstants.EVENT_PARAM_VALUE_YES.equals(WebActivity.this.getString(R.string.adjust_switch))) {
                 Adjust.trackEvent(new AdjustEvent(str));
             }
@@ -553,7 +509,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void onEventJs(String str) {
-            CommonUtil.log("native.AdjustEvent() " + str);
             if (AppEventsConstants.EVENT_PARAM_VALUE_YES.equals(WebActivity.this.getString(R.string.adjust_switch))) {
                 Adjust.trackEvent(new AdjustEvent(WebActivity.this.getString(R.string.adjust_event_register_success)));
             }
@@ -561,7 +516,6 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void onEventJsRecharge(String str) {
-            CommonUtil.log("native.AdjustEvent() " + str);
             if (AppEventsConstants.EVENT_PARAM_VALUE_YES.equals(WebActivity.this.getString(R.string.adjust_switch))) {
                 Adjust.trackEvent(new AdjustEvent(WebActivity.this.getString(R.string.adjust_event_recharge_success)));
             }
@@ -569,18 +523,10 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
         @JavascriptInterface
         public void onEventJsFirstRecharge(String str) {
-            CommonUtil.log("native.AdjustEvent() " + str);
             if (AppEventsConstants.EVENT_PARAM_VALUE_YES.equals(WebActivity.this.getString(R.string.adjust_switch))) {
                 Adjust.trackEvent(new AdjustEvent(WebActivity.this.getString(R.string.adjust_event_first_recharge_success)));
             }
         }
-    }
-
-    private String buildTransaction(String str) {
-        if (str == null) {
-            return String.valueOf(System.currentTimeMillis());
-        }
-        return str + System.currentTimeMillis();
     }
 
     @Override
@@ -613,54 +559,5 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        CommonUtil.log("WebActivity onDestroy~");
-    }
-
-
-    private Map<Integer, Runnable> allowablePermissionRunnables = new HashMap();
-    private Map<Integer, Runnable> disallowablePermissionRunnables = new HashMap();
-    private void showConfirmDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
-        builder.setCancelable(false);
-        builder.setMessage("游戏资源需要更新下载,需要开启访问读写权限哦!~");
-        builder.setPositiveButton("确定", (dialogInterface, i) -> dialogInterface.dismiss());
-        builder.setNegativeButton("关闭", (dialogInterface, i) -> {
-            dialogInterface.dismiss();
-            WebActivity welcomeActivity = WebActivity.this;
-            welcomeActivity.back(welcomeActivity.mContext);
-        });
-        builder.show();
-    }
-
-    private void showNormalDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.mContext);
-        builder.setCancelable(false);
-        builder.setMessage("游戏资源需要更新下载,请开启访问读写权限哦!~");
-        builder.setPositiveButton("确定", (dialogInterface, i) -> {
-            CommonUtil.toSelfSetting(WebActivity.this.mContext);
-            dialogInterface.dismiss();
-        });
-        builder.setNegativeButton("关闭", (dialogInterface, i) -> {
-            dialogInterface.dismiss();
-            WebActivity welcomeActivity = WebActivity.this;
-            welcomeActivity.back(welcomeActivity.mContext);
-        });
-        builder.show();
-    }
-
-    public void onRequestPermissionsResult(int i, String[] strArr, int[] iArr) {
-        super.onRequestPermissionsResult(i, strArr, iArr);
-        if (iArr[0] == 0) {
-            Runnable runnable = this.allowablePermissionRunnables.get(Integer.valueOf(i));
-            if (runnable != null) {
-                runnable.run();
-                return;
-            }
-            return;
-        }
-        Runnable runnable2 = this.disallowablePermissionRunnables.get(Integer.valueOf(i));
-        if (runnable2 != null) {
-            runnable2.run();
-        }
     }
 }

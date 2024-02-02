@@ -56,7 +56,7 @@ public class MainWordGame extends AppCompatActivity {
         win = MediaPlayer.create(this, R.raw.wins_sound);
         lose = MediaPlayer.create(this, R.raw.lose_sound);
 
-        pref = this.getSharedPreferences("WordSharedPrefs", Context.MODE_PRIVATE);
+        pref = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
 
         tvHintText = findViewById(R.id.tvHintText);
 
