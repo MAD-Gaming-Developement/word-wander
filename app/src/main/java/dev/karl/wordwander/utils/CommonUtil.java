@@ -1,5 +1,6 @@
 package dev.karl.wordwander.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -8,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import java.util.Random;
@@ -28,10 +31,6 @@ public class CommonUtil {
         }
         App app = App.context;
         Toast.makeText(app, " " + str, Toast.LENGTH_SHORT).show();
-    }
-
-    public static boolean isDebugEnv(Context context) {
-        return (context.getApplicationInfo().flags & 2) != 0;
     }
 
     public static boolean checkAppInstalled(Context context, String str) {

@@ -13,6 +13,7 @@ public class BaseActivity extends Activity {
         context = this;
     }
 
+
     /* access modifiers changed from: protected */
     public void onStart() {
         super.onStart();

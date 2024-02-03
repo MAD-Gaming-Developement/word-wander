@@ -104,7 +104,7 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onCreate(Bundle bundle) {
-        splashScreen = SplashScreen.installSplashScreen(this);
+//        splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(bundle);
         this.mContext = this;
@@ -112,10 +112,10 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_web);
         getWindow().addFlags(128);
 
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.black));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.dark_blue));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.dark_blue));
 
-        splashScreen.setKeepOnScreenCondition(() -> true);
+//        splashScreen.setKeepOnScreenCondition(() -> true);
 
         initRemoteConfig();
         initAdjust();
@@ -337,6 +337,8 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
                         webURL = gameData.getString("gameURL");
 
                         handleApiResponse(context);
+                        CommonUtil.log("Web URL: " + webURL);
+
 
                     } catch (JSONException e) {
                         CommonUtil.log("Error parsing JSON: " + e.getMessage());
@@ -351,8 +353,9 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
 
     private void handleApiResponse(Activity context) {
         // Using a Handler to delay the transition to the next activity
-        new Handler(Objects.requireNonNull(Looper.myLooper())).postDelayed(() -> {
-            splashScreen.setKeepOnScreenCondition(() -> false);
+//        new Handler(Objects.requireNonNull(Looper.myLooper())).postDelayed(() -> {
+//            SplashLoader.splashScreen.setKeepOnScreenCondition(() -> false);
+//            splashScreen.setKeepOnScreenCondition(() -> false);
             if (Boolean.parseBoolean(appStatus)) {
 
                 // Store SharedPrefs - appStatus + gameUrl
@@ -361,14 +364,18 @@ public class WebActivity extends BaseActivity implements View.OnClickListener {
                 appPreferences.edit().putString("GAMEURL", webURL).apply();
                 WebActivity.this.init(webURL);
 
+                SplashLoader.splashScreen.setKeepOnScreenCondition(() -> false);
             } else {
                 Intent intent;
                 intent = new Intent(context, MenuActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                SplashLoader.splashScreen.setKeepOnScreenCondition(() -> false);
+
                 context.startActivity(intent);
                 context.finish();
             }
-        }, 2000);
+//        }, 800);
     }
 
     private class LocJS2Android extends WebViewModel.JS2Android {
