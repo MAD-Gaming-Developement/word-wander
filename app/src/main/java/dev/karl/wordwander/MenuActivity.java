@@ -40,13 +40,15 @@ public class MenuActivity extends AppCompatActivity {
         exit.setOnClickListener(view -> {
             finishAffinity();
         });
-        policy.setVisibility(View.VISIBLE);
+        policy.setVisibility(View.INVISIBLE);
         policy.setOnClickListener(view -> {
+            /*
             Intent intent = new Intent(this, WebActivity.class);
             String gameURL = "file:///android_asset/userconsent.html";
             intent.putExtra("url", gameURL);
             startActivity(intent);
             finish();
+             */
         });
     }
 }

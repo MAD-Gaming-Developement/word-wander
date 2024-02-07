@@ -85,16 +85,4 @@
         android:layout_marginHorizontal="48sp"
         android:layout_marginTop="69sp"
         />
-
-    <androidx.constraintlayout.utils.widget.ImageFilterView
-        android:layout_width="150sp"
-        android:layout_height="0sp"
-        android:src="@drawable/rabbit"
-        android:importantForAccessibility="no"
-        app:layout_constraintTop_toBottomOf="@id/tvExitBtn"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tvPolicyBtn"
-        android:layout_marginTop="10sp"
-        />
 </androidx.constraintlayout.widget.ConstraintLayout>

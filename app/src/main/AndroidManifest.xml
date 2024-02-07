@@ -51,10 +51,6 @@
             android:name=".MainWordGame"
             android:exported="false"
             android:theme="@style/Theme.Wordwander" />
-        <activity
-            android:name=".WebActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Wordwander" />
     </application>
 
 </manifest>
